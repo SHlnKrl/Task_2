@@ -1,0 +1,181 @@
+﻿<Application x:Class="Task_2.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:Task_2"
+             StartupUri="MainWindow.xaml">
+    <Application.Resources>
+        <LinearGradientBrush x:Key="GrayBlueGradientBrush"
+                             StartPoint="0,0" EndPoint="1,1">
+            <GradientStop Color="Indigo" Offset="0"/>
+            <GradientStop Color="DeepPink" Offset="0.5"/>
+            <GradientStop Color="Indigo" Offset="1"/>
+        </LinearGradientBrush>
+
+        <GradientStopCollection x:Key="GlassGradient">
+            <GradientStop Color="WhiteSmoke" Offset="0.2"/>
+            <GradientStop Color="Transparent" Offset="0.4"/>
+            <GradientStop Color="WhiteSmoke" Offset="0.5"/>
+            <GradientStop Color="Transparent" Offset="0.75"/>
+            <GradientStop Color="WhiteSmoke" Offset="0.9"/>
+            <GradientStop Color="Transparent" Offset="1"/>
+        </GradientStopCollection>
+
+        <LinearGradientBrush x:Key="GlassBrush"
+                             StartPoint="0,0"
+                             EndPoint="1,1"
+                             Opacity="0.75"
+                             GradientStops="{StaticResource GlassGradient}"/>
+
+        <Style TargetType="{x:Type Button}">
+            <Setter Property="Background" 
+                    Value="{StaticResource GrayBlueGradientBrush}"/>
+            <Setter Property="Width" Value="90"/>
+            <Setter Property="Margin" Value="10"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Grid Width="{TemplateBinding Width}"
+                              Height="{TemplateBinding Height}"
+                              ClipToBounds="True">
+
+                            <Rectangle x:Name="outRect"
+                                       HorizontalAlignment="Stretch"
+                                       VerticalAlignment="Stretch"
+                                       Stroke="{TemplateBinding Background}"
+                                       StrokeThickness="5"
+                                       Fill="Transparent"
+                                       RadiusX="20"
+                                       RadiusY="20"/>
+
+                            <Rectangle x:Name="innerRect"
+                                       HorizontalAlignment="Stretch"
+                                       VerticalAlignment="Stretch"
+                                       Stroke="Transparent"
+                                       StrokeThickness="20"
+                                       Fill="{TemplateBinding Background}"
+                                       RadiusX="20"
+                                       RadiusY="20"/>
+
+                            <Rectangle x:Name="glassRect"
+                                       HorizontalAlignment="Stretch"
+                                       VerticalAlignment="Stretch"
+                                       StrokeThickness="2"
+                                       RadiusX="10"
+                                       RadiusY="10"
+                                       Opacity="0"
+                                       Fill="{StaticResource GlassBrush}"
+                                       RenderTransformOrigin="0.5, 0.5">
+                                
+                                <Rectangle.Stroke>
+                                    <LinearGradientBrush StartPoint="0.5, 0"
+                                                         EndPoint="0.5, 1">
+                                        <LinearGradientBrush.GradientStops>
+                                            <GradientStop Offset="0.0" Color="LightBlue"/>
+                                            <GradientStop Offset="1.0" Color="Gray"/>
+                                        </LinearGradientBrush.GradientStops>
+                                    </LinearGradientBrush>
+                                </Rectangle.Stroke>
+
+                                <Rectangle.RenderTransform>
+                                    <TransformGroup>
+                                        <ScaleTransform/>
+                                        <RotateTransform/>
+                                    </TransformGroup>
+                                </Rectangle.RenderTransform>
+
+                                <Rectangle.BitmapEffect>
+                                    <BevelBitmapEffect/>
+                                </Rectangle.BitmapEffect>
+                            </Rectangle>
+                            
+                            <DockPanel Name="ContPresDocPan">
+                                <ContentPresenter x:Name="ContPres"
+                                                  Margin="20"
+                                                  Content="{TemplateBinding Content}"
+                                                  TextBlock.Foreground="Black"/>
+                            </DockPanel>
+                        </Grid>
+
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" 
+                                     Value="True">
+                                <Setter Property="Rectangle.Stroke" 
+                                        TargetName="outRect"
+                                        Value="{DynamicResource 
+                                    {x:Static SystemColors.HighlightBrushKey}}"/>
+                                <Setter Property="Rectangle.Opacity" 
+                                        Value="1" 
+                                        TargetName="glassRect"/>
+                                <Setter Property="ContentPresenter.BitmapEffect"
+                                        TargetName="ContPres">
+                                    <Setter.Value>
+                                        <BlurBitmapEffect Radius="1"/>
+                                    </Setter.Value>
+                                </Setter>
+                            </Trigger>
+
+                            <Trigger Property="IsFocused"
+                                     Value="True">
+                                <Setter Property="Rectangle.Opacity"
+                                        Value="1"
+                                        TargetName="glassRect"/>
+                                <Setter Property="Rectangle.Stroke" 
+                                        TargetName="outRect"
+                                        Value="{DynamicResource 
+                                    {x:Static SystemColors.HighlightBrush}}"/>
+                                <Setter Property="Rectangle.Opacity"
+                                        Value="1"
+                                        TargetName="glassRect"/>
+                            </Trigger>
+
+                            <EventTrigger RoutedEvent="Mouse.MouseEnter">
+                                <EventTrigger.Actions>
+                                    <BeginStoryboard x:Name="mouseEnterBegin">
+                                        <Storyboard>
+                                            <DoubleAnimation Storyboard.TargetName="glassRect"
+                                                             Storyboard.TargetProperty=
+                                                             "(Rectangle.RenderTransform).
+                                                             (TransformGroup.Children)[0].
+                                                             (ScaleTransform.ScaleX)"
+                                                             By="-0.1" 
+                                                             Duration="0:0:0.5"/>
+
+                                            <DoubleAnimation Storyboard.TargetName="glassRect"
+                                                             Storyboard.TargetProperty=
+                                                             "(Rectangle.RenderTransform).
+                                                             (TransformGroup.Children)[0].
+                                                             (ScaleTransform.ScaleY)"
+                                                             By="-0.1" Duration="0:0:0.5"/>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </EventTrigger.Actions>
+                            </EventTrigger>
+
+                            <EventTrigger RoutedEvent="Mouse.MouseLeave">
+                                <EventTrigger.Actions>
+                                    <StopStoryboard BeginStoryboardName="mouseEnterBegin"/>
+                                </EventTrigger.Actions>
+                            </EventTrigger>
+
+                            <EventTrigger RoutedEvent="Button.Click">
+                                <EventTrigger.Actions>
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <DoubleAnimation Storyboard.TargetName="glassRect"
+                                                             Storyboard.TargetProperty=
+                                                             "(Rectangle.RenderTransform).
+                                                             (TransformGroup.Children)[1].
+                                                             (RotateTransform.Angle)"
+                                                             By="360" Duration="0:0:0.5"/>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </EventTrigger.Actions>
+                            </EventTrigger>
+                        </ControlTemplate.Triggers>
+
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Application.Resources>
+</Application>
